@@ -11,7 +11,7 @@
 ### 步驟
 
 1. Fork 專案儲存庫：
-   - 訪問 https://github.com/original-owner/team-weather
+   - 訪問 [https://github.com/original-owner/team-weather](https://github.com/jiangMo09/team-weather/tree/develop)
    - 點擊頁面右上角的 "Fork" 按鈕
    - 選擇你要 Fork 到的目標帳號（通常是你自己的帳號）
 
