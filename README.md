@@ -23,7 +23,7 @@
 
 3. 設定上游遠端 repository：
    ```
-   git remote add upstream https://github.com/original-owner/team-weather.git
+   git remote add origin https://github.com/original-owner/team-weather.git
    ```
 
 4. 創建並啟動虛擬環境：
