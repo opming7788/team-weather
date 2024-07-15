@@ -23,7 +23,7 @@
 
 3. 設定上游遠端 repository：
    ```
-   git remote add origin https://github.com/original-owner/team-weather.git
+   git remote add origin https://github.com/jiangMo09/team-weather.git # 注意：此專案主要在 develop 分支上進行開發。
    ```
 
 4. 創建並啟動虛擬環境：
