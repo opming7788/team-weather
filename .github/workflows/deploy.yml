@@ -18,4 +18,4 @@ jobs:
     
     - name: Deploy to Server
       run: |
-        ssh ubuntu@35.77.223.154 "cd /home/ubuntu/team-weather && git pull origin master && command-to-update-project"
+        ssh ubuntu@35.77.223.154 "cd /home/ubuntu/team-weather && git pull origin master && sudo systemctl restart team-weather"
