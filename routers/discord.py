@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Request
+from fastapi.responses import FileResponse
 
 router = APIRouter()
 
-
-@router.get("/discord")
+@router.get("/discord", include_in_schema=False)
 async def index(request: Request):
-    return {"message": "Hello Discord"}
+    return FileResponse("./static/discord.html", media_type="text/html")
