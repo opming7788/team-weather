@@ -74,10 +74,10 @@ function scrollToBottom() {
   });
 }
 
-// 2 秒後沒有輸入狀態則清除
 let typingTimer;
 let shouldShowFeedback = false;
 
+// 當用戶輸入文字時不會頻繁發送 feedback，停止輸入 2 秒後再輸入才會發送
 function sendThrottledFeedback(feedback){
   clearTimeout(typingTimer);
   typingTimer = setTimeout(()=>{
