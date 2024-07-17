@@ -3,11 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>websockets</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+      integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="/static/css/websockets.css" />
+    <title>Weather Chat</title>
   </head>
   <body>
-    <di>websockets page</di>
-    <script type="module" src="/static/js/websockets.js"></script>
+  <div class="chat">
+    <h1 class="title">Weather Chat ☀️</h1>
+    <div class="main">
+      <div class="name">
+        <span><i class="far fa-user"></i></span>
+        <input
+          type="text"
+          id="name-input"
+          class="name-input"
+          value="請輸入名字"
+          maxlength="20"
+        />
+      </div>
+      <ul class="message-container" id="message-container">
+        <!-- These li elements are only for reference, and therefore, they are commented out... -->
+        <!-- <li class="message__left">
+          <span class="message__left--name">測試測試</span>
+          <p class="message__left--text">
+            你好嗎
+          </p>
+        </li>
+        <li class="message__right">
+          <span class="message__right--name">bluebird</span>
+          <p class="message__right--text">
+            I am very good!
+          </p>
+        </li> -->
+        <li class="message-feedback">
+          <p class="feedback" id="feedback">&nbsp;</p>
+        </li>
+      </ul>
+      <form class="message-form" id="message-form">
+        <input
+          type="text"
+          name="message"
+          id="message-input"
+          class="message-input"
+        />
+        <div class="v-divider"></div>
+        <button type="submit" class="send-button">
+          send  <span><i class="far fa-paper-plane"></i></span>
+        </button>
+      </form>
+    </div>
+    <h3 class="clients-total" id="client-total"></h3>
+  </div>
+    <script src="/static/js/websockets.js"></script>
   </body>
 </html>
