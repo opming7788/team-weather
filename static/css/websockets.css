@@ -65,6 +65,12 @@
   overflow-x: hidden;
   padding-top: 7px;
   padding-bottom: 10px;
+  scrollbar-width: none;  /* 用於 Firefox */
+  -ms-overflow-style: none;  /* 用於 Internet Explorer 和 Edge */
+}
+
+.message-container::-webkit-scrollbar {
+display: none;  /* 用於 Chrome, Safari 和 Opera */
 }
 
 .message__right, .message__left {

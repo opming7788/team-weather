@@ -39,7 +39,7 @@ function sendMessage() {
   websocket.send(JSON.stringify(data));
   addMessageToUI(true, data.data);
   messageInput.value = "";
-  
+
 }
 
 function checkName() {
@@ -75,7 +75,13 @@ function scrollToBottom() {
 }
 
 // send feedback
-let typingTimer;
+function debounce(func, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(this, args), delay);
+  };
+}
 
 function sendTypingStatus(isTyping) {
   if (checkName()) {
@@ -89,6 +95,15 @@ function sendTypingStatus(isTyping) {
   }
 }
 
+let typingTimer;
+const TYPING_TIMEOUT = 5000;
+const debouncedSendTypingStatus = debounce(sendTypingStatus, 600);
+
+function longDebounce(func, delay){
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(func, delay);
+}
+
 messageInput.addEventListener("focus", () => {
   if (checkName()) {
     sendTypingStatus(true);  
@@ -96,17 +111,14 @@ messageInput.addEventListener("focus", () => {
 });
 
 messageInput.addEventListener("input", () => {
-  clearTimeout(typingTimer);
-  sendTypingStatus(true);  
-  typingTimer = setTimeout(() => {
-    sendTypingStatus(false);  
-  }, 2000);
+  debouncedSendTypingStatus(true);  
+  longDebounce(() => sendTypingStatus(false), TYPING_TIMEOUT);
 });
 
 messageInput.addEventListener("blur", () => {
-  clearTimeout(typingTimer);
   sendTypingStatus(false);  
 });
+
 
 
 // handel feedback
