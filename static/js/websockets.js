@@ -22,7 +22,7 @@ websocket.onmessage = (event) => {
   } else if (data.type === "chat-message") {
     addMessageToUI(false, data.data);
   } else if (data.type === "feedback") {
-    handleFeedback(data.data);
+    handleFeedback(data);
   }
 };
 
@@ -74,48 +74,48 @@ function scrollToBottom() {
   });
 }
 
+// send feedback
 let typingTimer;
-let shouldShowFeedback = false;
 
-// 當用戶輸入文字時不會頻繁發送 feedback，停止輸入 2 秒後再輸入才會發送
-function sendThrottledFeedback(feedback){
-  clearTimeout(typingTimer);
-  typingTimer = setTimeout(()=>{
-    sendFeedback(feedback);
-  }, 2000);
+function sendTypingStatus(isTyping) {
+  if (checkName()) {
+    websocket.send(JSON.stringify({
+      type: "typing",
+      data: {
+        name: nameInput.value,
+        isTyping: isTyping
+      }
+    }));
+  }
 }
 
-messageInput.addEventListener("focus", (event) => {
+messageInput.addEventListener("focus", () => {
   if (checkName()) {
-    sendFeedback(`${nameInput.value} 正在輸入...`);
-    shouldShowFeedback = true;
+    sendTypingStatus(true);  
   }
 });
 
-messageInput.addEventListener("input", (event) => {
-  sendThrottledFeedback(`${nameInput.value} 正在輸入...`);
-  shouldShowFeedback = true;
+messageInput.addEventListener("input", () => {
+  clearTimeout(typingTimer);
+  sendTypingStatus(true);  
+  typingTimer = setTimeout(() => {
+    sendTypingStatus(false);  
+  }, 2000);
 });
 
-messageInput.addEventListener("blur", (event) => {
-  clearTimeout(typingTimer)
-  sendFeedback("");
-  shouldShowFeedback = false;
+messageInput.addEventListener("blur", () => {
+  clearTimeout(typingTimer);
+  sendTypingStatus(false);  
 });
 
-function sendFeedback(feedback) {
-  websocket.send(JSON.stringify({
-    type: "feedback",
-    data: { feedback }
-  }));
-}
 
+// handel feedback
 function handleFeedback(data) {
-  clearFeedback();
-  if (data.feedback) {
+  if (data.name !== nameInput.value) {
+    clearFeedback();
     const element = `
       <li class="message-feedback">
-        <p class="feedback">${data.feedback}</p>
+        <p class="feedback">${data.data.feedback}</p>
       </li>
     `;
     messageContainer.innerHTML += element;
@@ -127,16 +127,20 @@ function clearFeedback() {
   document.querySelectorAll("li.message-feedback").forEach((element) => {
     element.parentNode.removeChild(element);
   });
-  if (shouldShowFeedback) {
-    sendFeedback(`${nameInput.value} 正在輸入...`);
-  }
 }
 
-
-// 每 20 秒清除一次 feedbackContent 以簡易的方式防止輸入時瀏覽器刷新殘留的 feedback 留在視窗中
-setInterval(clearFeedback, 20000);
-
-
+// 刷新時清除 feedback
+window.addEventListener("beforeunload", () => {
+  if (websocket.readyState === WebSocket.OPEN) {
+    websocket.send(JSON.stringify({
+      type: "typing",
+      data: {
+        name: nameInput.value,
+        isTyping: false
+      }
+    }));
+  }
+});
 
 websocket.onclose = () => {
   console.log("WebSocket disconnected");
