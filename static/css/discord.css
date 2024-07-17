@@ -1,4 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap');
 .discord-Button {
+	margin-top: 15px;
+	font-family: "Noto Sans TC";
+	width:100%;
 	background-color: #7289DA;
 	color: white;
 	font-size: 18px;
@@ -16,4 +20,9 @@
 
 .discord-Button:active {
 	background-color: #4e5d94;
+}
+.discord-img {
+	width: 20px;
+    height: 20px; 
+    margin-left: 2px;
 }
