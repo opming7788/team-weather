@@ -74,30 +74,33 @@ function scrollToBottom() {
   });
 }
 
-// 3 秒後沒有輸入狀態則清除
+// 2 秒後沒有輸入狀態則清除
 let typingTimer;
-const TYPING_INTERVAL = 3000;
+let shouldShowFeedback = false;
 
 function sendThrottledFeedback(feedback){
   clearTimeout(typingTimer);
   typingTimer = setTimeout(()=>{
     sendFeedback(feedback);
-  }, TYPING_INTERVAL);
+  }, 2000);
 }
 
 messageInput.addEventListener("focus", (event) => {
   if (checkName()) {
     sendFeedback(`${nameInput.value} 正在輸入...`);
+    shouldShowFeedback = true;
   }
 });
 
 messageInput.addEventListener("input", (event) => {
   sendThrottledFeedback(`${nameInput.value} 正在輸入...`);
+  shouldShowFeedback = true;
 });
 
 messageInput.addEventListener("blur", (event) => {
   clearTimeout(typingTimer)
   sendFeedback("");
+  shouldShowFeedback = false;
 });
 
 function sendFeedback(feedback) {
@@ -122,7 +125,16 @@ function clearFeedback() {
   document.querySelectorAll("li.message-feedback").forEach((element) => {
     element.parentNode.removeChild(element);
   });
+  if (shouldShowFeedback) {
+    sendFeedback(`${nameInput.value} 正在輸入...`);
+  }
 }
+
+
+// 每 20 秒清除一次 feedbackContent 以簡易的方式防止輸入時瀏覽器刷新殘留的 feedback 留在視窗中
+setInterval(clearFeedback, 20000);
+
+
 
 websocket.onclose = () => {
   console.log("WebSocket disconnected");
