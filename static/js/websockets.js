@@ -34,12 +34,12 @@ function sendMessage() {
     data: {
       name: nameInput.value,
       message: messageInput.value,
-      dateTime: new Date(),
     }
   };
   websocket.send(JSON.stringify(data));
   addMessageToUI(true, data.data);
   messageInput.value = "";
+  
 }
 
 function checkName() {
@@ -112,13 +112,15 @@ function sendFeedback(feedback) {
 
 function handleFeedback(data) {
   clearFeedback();
-  const element = `
-    <li class="message-feedback">
-      <p class="feedback">${data.feedback}</p>
-    </li>
-  `;
-  messageContainer.innerHTML += element;
-  scrollToBottom(); 
+  if (data.feedback) {
+    const element = `
+      <li class="message-feedback">
+        <p class="feedback">${data.feedback}</p>
+      </li>
+    `;
+    messageContainer.innerHTML += element;
+    scrollToBottom();
+  }
 }
 
 function clearFeedback() {
