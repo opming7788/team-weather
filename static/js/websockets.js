@@ -148,8 +148,11 @@ function clearFeedback() {
   });
 }
 
-// 刷新時清除 feedback
-window.addEventListener("beforeunload", () => {
+// 刷新或關閉時清除 feedback
+window.addEventListener("beforeunload", clearTypingStatus);
+window.addEventListener("unload", clearTypingStatus);
+
+function clearTypingStatus() {
   if (websocket.readyState === WebSocket.OPEN) {
     websocket.send(JSON.stringify({
       type: "typing",
@@ -159,7 +162,7 @@ window.addEventListener("beforeunload", () => {
       }
     }));
   }
-});
+}
 
 websocket.onclose = () => {
   console.log("WebSocket disconnected");
