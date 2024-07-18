@@ -22,7 +22,7 @@ websocket.onmessage = (event) => {
   } else if (data.type === "chat-message") {
     addMessageToUI(false, data.data);
   } else if (data.type === "feedback") {
-    handleFeedback(data.data);
+    handleFeedback(data);
   }
 };
 
@@ -34,12 +34,12 @@ function sendMessage() {
     data: {
       name: nameInput.value,
       message: messageInput.value,
-      dateTime: new Date(),
     }
   };
   websocket.send(JSON.stringify(data));
   addMessageToUI(true, data.data);
   messageInput.value = "";
+
 }
 
 function checkName() {
@@ -74,67 +74,85 @@ function scrollToBottom() {
   });
 }
 
-let typingTimer;
-let shouldShowFeedback = false;
-
-// 當用戶輸入文字時不會頻繁發送 feedback，停止輸入 2 秒後再輸入才會發送
-function sendThrottledFeedback(feedback){
-  clearTimeout(typingTimer);
-  typingTimer = setTimeout(()=>{
-    sendFeedback(feedback);
-  }, 2000);
+// send feedback
+function debounce(func, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(this, args), delay);
+  };
 }
 
-messageInput.addEventListener("focus", (event) => {
+function sendTypingStatus(isTyping) {
   if (checkName()) {
-    sendFeedback(`${nameInput.value} 正在輸入...`);
-    shouldShowFeedback = true;
+    websocket.send(JSON.stringify({
+      type: "typing",
+      data: {
+        name: nameInput.value,
+        isTyping: isTyping
+      }
+    }));
+  }
+}
+
+let typingTimer;
+const TYPING_TIMEOUT = 5000;
+const debouncedSendTypingStatus = debounce(sendTypingStatus, 600);
+
+function longDebounce(func, delay){
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(func, delay);
+}
+
+messageInput.addEventListener("focus", () => {
+  if (checkName()) {
+    sendTypingStatus(true);  
   }
 });
 
-messageInput.addEventListener("input", (event) => {
-  sendThrottledFeedback(`${nameInput.value} 正在輸入...`);
-  shouldShowFeedback = true;
+messageInput.addEventListener("input", () => {
+  debouncedSendTypingStatus(true);  
+  longDebounce(() => sendTypingStatus(false), TYPING_TIMEOUT);
 });
 
-messageInput.addEventListener("blur", (event) => {
-  clearTimeout(typingTimer)
-  sendFeedback("");
-  shouldShowFeedback = false;
+messageInput.addEventListener("blur", () => {
+  sendTypingStatus(false);  
 });
 
-function sendFeedback(feedback) {
-  websocket.send(JSON.stringify({
-    type: "feedback",
-    data: { feedback }
-  }));
-}
 
+
+// handel feedback
 function handleFeedback(data) {
-  clearFeedback();
-  const element = `
-    <li class="message-feedback">
-      <p class="feedback">${data.feedback}</p>
-    </li>
-  `;
-  messageContainer.innerHTML += element;
-  scrollToBottom(); 
+  if (data.name !== nameInput.value) {
+    clearFeedback();
+    const element = `
+      <li class="message-feedback">
+        <p class="feedback">${data.data.feedback}</p>
+      </li>
+    `;
+    messageContainer.innerHTML += element;
+    scrollToBottom();
+  }
 }
 
 function clearFeedback() {
   document.querySelectorAll("li.message-feedback").forEach((element) => {
     element.parentNode.removeChild(element);
   });
-  if (shouldShowFeedback) {
-    sendFeedback(`${nameInput.value} 正在輸入...`);
-  }
 }
 
-
-// 每 20 秒清除一次 feedbackContent 以簡易的方式防止輸入時瀏覽器刷新殘留的 feedback 留在視窗中
-setInterval(clearFeedback, 20000);
-
-
+// 刷新時清除 feedback
+window.addEventListener("beforeunload", () => {
+  if (websocket.readyState === WebSocket.OPEN) {
+    websocket.send(JSON.stringify({
+      type: "typing",
+      data: {
+        name: nameInput.value,
+        isTyping: false
+      }
+    }));
+  }
+});
 
 websocket.onclose = () => {
   console.log("WebSocket disconnected");
