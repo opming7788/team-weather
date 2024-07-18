@@ -1,0 +1,21 @@
+name: Deploy to Ubuntu Server
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+    
+    - name: Deploy to Server
+      run: |
+        ssh ubuntu@35.77.223.154 "cd /home/ubuntu/team-weather && git pull origin master && sudo systemctl restart team-weather"
