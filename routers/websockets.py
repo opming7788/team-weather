@@ -53,10 +53,9 @@ async def handle_messages():
 
 async def handle_typing_status(data: Dict):
     name = data["name"]
-    print(name)
+    # print(name)
     is_typing = data["isTyping"]
-    print(is_typing)
-    
+    # print(is_typing)
     if is_typing:
         typing_users.add(name)
     else:
@@ -71,9 +70,7 @@ async def broadcast_typing_feedback():
         feedback = f"{list(typing_users)[0]} 正在輸入..."
     else:
         feedback = "多人輸入中..."
-
-    print(feedback)
-    
+    # print(feedback)
     for socket in connected_sockets:
         await socket.send_json({
             "type": "feedback",

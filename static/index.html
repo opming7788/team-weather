@@ -5,16 +5,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Taiwan Map</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+      integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/static/css/websockets.css" />
     <link rel="stylesheet" href="/static/css/discord.css" />
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap');
       * {
         font-family: "Noto Sans TC";
-      }
-
-      svg {
-        height: 100vh;
-        /* width: 50%; */
       }
 
       body {
@@ -66,28 +68,37 @@
       .forcast h2 {
         margin-top: 20px;
       }
+
       .InfoContainer {
-        display: flex;
-        /* justify-content: center; */
-        /* align-items: center; */
+        height: calc(100vh - 20px);
+        width: calc(100vw - 440px);
+        display: grid;
+        grid-template-columns: 0.85fr 1.15fr;
       }
+
+      .svg-container {
+        margin:auto 0;
+      }
+      
+      .weather-and-discord-container {
+        margin:auto 0;
+      }
+
       .svgimg {
-        width: 33.3%;
-        /* width: calc((100vw - 500px) / 2) */
+        width: calc(42.5vw - 187px);
       }
-      .svgimg svg {
-        width: 100%;
-      }
-      .weatherContainer {
-        margin: 0px 10px 0px 10px;
-        width: 33.3%;
-        /* width: calc((100vw - 500px) / 2) */
-        display: block;
-      }
+      
+      
       .weather-container {
         background: rgba(130, 129, 129, 0.198);
+        margin: 0 auto;
+        display: block;
+        width: 35vw;
         border-radius: 6px;
+        top: 50%;
+        padding: 10px;
       }
+      
       .CurrentCityContainer {
         font-family: "Noto Sans TC";
         font-weight: 600; 
@@ -171,13 +182,14 @@
   <body>
     <!-- 臺灣地圖SVG內容在這裡 -->
     <div class="InfoContainer">
-      <div class="svgimg">
-        <svg
-          id="cf503461-00bd-459a-aeb5-062ebc913211"
-          data-name="圖層 1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 595.28 841.89"
-        >
+      <div class="svg-container">
+        <div class="svgimg">
+          <svg
+            id="cf503461-00bd-459a-aeb5-062ebc913211"
+            data-name="圖層 1"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 595.28 841.89"
+          >
           <defs></defs>
 
           <path
@@ -554,91 +566,141 @@
               class="bc4bd339-f614-4405-a1f2-7f894051d5a3"
               d="M176.9,53.81l-1.63,1.43.14.47,2.85.2-.14-.81-1.22-1.29Z"
             />
-          </g>
-        </svg>
-      </div>
-      <div class="weatherContainer">
-        <div class="weather-container">
-          <div class="CurrentCityContainer" id="CurrentCity"></div>
-          <div class="CurrentCityWeatherInfo">
-            <div>目前溫度： <span class="CityTemp" id="CityTemp"></span></div>
-            <div>降雨機率： <span class="RainyProb" id="RainyProb"></span></div>
-            <div>
-              天氣狀況：
-              <span class="WeatherCondition" id="WeatherCondition"></span>
-            </div>
-            <div>舒適指數： <span id="ComfortIdx"></span></div>
-          </div>
-          <div class="weatherInfo">
-            <ul class="to-to">
-              <li>
-                <span id="title1" class="title" title="07/15-18:00 ~ 07/16-06:00">
-                  今晚明晨
-                </span>
-                <img
-                  id="img1"
-                  src="/static/img/night/02.svg"
-                  alt=""
-                  title=""
-                  class="img-responsive"
-                />
-                <span class="temp"
-                  ><span id="tem1" class="tem-C">26 - 32</span></span
-                >
-                <span class="rain">
-                  <span>降雨機率</span>
-                  <span id="rain-chance1" class="rain-chance">10</span>
-                </span>
-                <span id="text1" class="text"></span>
-              </li>
-              <li>
-                <span id="title2" class="title" title="07/16-06:00 ~ 07/16-18:00">
-                  明日白天
-                </span>
-                <img
-                  id="img2"
-                  src="/static/img/day/21.svg"
-                  alt=""
-                  title=""
-                  class="img-responsive"
-                />
-                <span class="temp"
-                  ><span id="tem2" class="tem-C">26 - 38</span></span
-                >
-                <span class="rain">
-                  <span>降雨機率</span>
-                  <span id="rain-chance2" class="rain-chance">50</span>
-                </span>
-                <span id="text2" class="text"></span>
-              </li>
-              <li>
-                <span id="title3" class="title" title="07/16-18:00 ~ 07/17-06:00">
-                  明日晚上
-                </span>
-                <img
-                  id="img3"
-                  src="/static/img/night/02.svg"
-                  alt=""
-                  title=""
-                  class="img-responsive"
-                />
-                <span class="temp"
-                  ><span id="tem3" class="tem-C">26 - 32</span></span
-                >
-                <span class="rain">
-                  <span>降雨機率</span>
-                  <span id="rain-chance3" class="rain-chance">70</span>
-                </span>
-                <span id="text3" class="text"></span>
-              </li>
-            </ul>
-          </div>
+            </g>
+          </svg>
         </div>
-        <button class="discord-Button" id="discord-Button">發送通知到Discord <img src="./static/img/discord/discord.png" class="discord-img"></button>
-
       </div>
-      
+      <!-- weather -->
+      <div class="weather-and-discord-container">
+        <div class="weather-and-discord">
+          <div class="weather-container">
+            <div class="CurrentCityContainer" id="CurrentCity"></div>
+            <div class="CurrentCityWeatherInfo">
+              <div>目前溫度： <span class="CityTemp" id="CityTemp"></span></div>
+              <div>降雨機率： <span class="RainyProb" id="RainyProb"></span></div>
+              <div>
+                天氣狀況：
+                <span class="WeatherCondition" id="WeatherCondition"></span>
+              </div>
+              <div>舒適指數： <span id="ComfortIdx"></span></div>
+            </div>
+            <div class="weatherInfo">
+              <ul class="to-to">
+                <li>
+                  <span id="title1" class="title" title="07/15-18:00 ~ 07/16-06:00">
+                    今晚明晨
+                  </span>
+                  <img
+                    id="img1"
+                    src="/static/img/night/02.svg"
+                    alt=""
+                    title=""
+                    class="img-responsive"
+                  />
+                  <span class="temp"
+                    ><span id="tem1" class="tem-C">26 - 32</span></span
+                  >
+                  <span class="rain">
+                    <span>降雨機率</span>
+                    <span id="rain-chance1" class="rain-chance">10</span>
+                  </span>
+                  <span id="text1" class="text"></span>
+                </li>
+                <li>
+                  <span id="title2" class="title" title="07/16-06:00 ~ 07/16-18:00">
+                    明日白天
+                  </span>
+                  <img
+                    id="img2"
+                    src="/static/img/day/21.svg"
+                    alt=""
+                    title=""
+                    class="img-responsive"
+                  />
+                  <span class="temp"
+                    ><span id="tem2" class="tem-C">26 - 38</span></span
+                  >
+                  <span class="rain">
+                    <span>降雨機率</span>
+                    <span id="rain-chance2" class="rain-chance">50</span>
+                  </span>
+                  <span id="text2" class="text"></span>
+                </li>
+                <li>
+                  <span id="title3" class="title" title="07/16-18:00 ~ 07/17-06:00">
+                    明日晚上
+                  </span>
+                  <img
+                    id="img3"
+                    src="/static/img/night/02.svg"
+                    alt=""
+                    title=""
+                    class="img-responsive"
+                  />
+                  <span class="temp"
+                    ><span id="tem3" class="tem-C">26 - 32</span></span
+                  >
+                  <span class="rain">
+                    <span>降雨機率</span>
+                    <span id="rain-chance3" class="rain-chance">70</span>
+                  </span>
+                  <span id="text3" class="text"></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <button class="discord-Button" id="discord-Button">發送通知到Discord <img src="./static/img/discord/discord.png" class="discord-img"></button>
+        </div>
+      </div>  
     </div>
+    <!-- chat -->
+    <div class="chat">
+      <h1 class="title">Weather Chat ☀️</h1>
+      <div class="main">
+        <div class="name">
+          <span><i class="far fa-user"></i></span>
+          <input
+            type="text"
+            id="name-input"
+            class="name-input"
+            value="請輸入名字"
+            maxlength="20"
+          />
+        </div>
+        <ul class="message-container" id="message-container">
+          <!-- These li elements are only for reference, and therefore, they are commented out... -->
+          <!-- <li class="message__left">
+            <span class="message__left--name">測試測試</span>
+            <p class="message__left--text">
+              你好嗎
+            </p>
+          </li>
+          <li class="message__right">
+            <span class="message__right--name">bluebird</span>
+            <p class="message__right--text">
+              I am very good!
+            </p>
+          </li> -->
+          <li class="message-feedback">
+            <p class="feedback" id="feedback">&nbsp;</p>
+          </li>
+        </ul>
+        <form class="message-form" id="message-form">
+          <input
+            type="text"
+            name="message"
+            id="message-input"
+            class="message-input"
+          />
+          <div class="v-divider"></div>
+          <button type="submit" class="send-button">
+            send  <span><i class="far fa-paper-plane"></i></span>
+          </button>
+        </form>
+      </div>
+      <h3 class="clients-total" id="client-total"></h3>
+    </div>
+    <script src="/static/js/websockets.js"></script>
     <script>
       async function fetchData() {
         const response = await fetch(
