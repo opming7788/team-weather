@@ -42,9 +42,16 @@ function sendMessage() {
 
 }
 
+// checkName
+let hasAlerted = false;
+
 function checkName() {
-  if (nameInput.value.trim() === "" ||nameInput.value.trim() === "請輸入名字"){
-    alert("要在框框上方輸入名字哦！");
+  if (nameInput.value.trim() === "" || nameInput.value.trim() === "請輸入名字") {
+    if (!hasAlerted) {
+      alert("要在框框上方輸入名字哦！");
+      hasAlerted = true;
+      setTimeout(() => { hasAlerted = false; }, 1000); 
+    }
     nameInput.focus();
     return false;
   }
@@ -70,7 +77,7 @@ function addMessageToUI(isOwnMessage, data) {
 function scrollToBottom() {
   messageContainer.scrollTo({
     top: messageContainer.scrollHeight,
-    behavior: 'smooth'
+    behavior: "smooth"
   });
 }
 
